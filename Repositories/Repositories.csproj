@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Api\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Datasource\Datasource.csproj" />
   </ItemGroup>
 
