@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Services.Interfaces;
 
 namespace Api.Controllers
 {
@@ -6,9 +7,13 @@ namespace Api.Controllers
     [ApiController]
     public class TextSourceController : ControllerBase
     {
-        public TextSourceController()
+        private readonly IServiceTextSource serviceTextSource;
+        private readonly ILogger<AuthenticationController> logger;
+
+        public TextSourceController(IServiceTextSource serviceTextSource, ILogger<AuthenticationController> logger)
         {
-            
+            this.serviceTextSource = serviceTextSource;
+            this.logger = logger;
         }
 
         [HttpPost]

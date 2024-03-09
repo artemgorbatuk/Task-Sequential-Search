@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Services.Interfaces;
 
 namespace Api.Controllers
 {
@@ -6,11 +7,13 @@ namespace Api.Controllers
     [Route("[controller]")]
     public class AuthenticationController : ControllerBase
     {
-        private readonly ILogger<AuthenticationController> _logger;
+        private readonly IServiceAuthentification serviceAuthentification;
+        private readonly ILogger<AuthenticationController> logger;
 
-        public AuthenticationController(ILogger<AuthenticationController> logger)
+        public AuthenticationController(IServiceAuthentification serviceAuthentification, ILogger<AuthenticationController> logger)
         {
-            _logger = logger;
+            this.serviceAuthentification = serviceAuthentification;
+            this.logger = logger;
         }
 
         [HttpPost]
