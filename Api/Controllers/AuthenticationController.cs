@@ -17,8 +17,13 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        public void Login()
+        public IActionResult Login(string username, string password)
         {
+            bool isAuthenticated = serviceAuthentification.Login(username, password);
+
+            return isAuthenticated 
+                ? Ok(new { Message = "Аутентификация прошла успешно" }) 
+                : Unauthorized();
         }
     }
 }
