@@ -6,16 +6,15 @@ namespace Datasource.Contexts
 {
     public class DbContextSequentialSearch : DbContext
     {
-        public DbContextSequentialSearch() { }
         public DbContextSequentialSearch(DbContextOptions<DbContextSequentialSearch> options) : base(options) { }
 
         public virtual DbSet<TextSource> TextSources { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
+            options.EnableSensitiveDataLogging(false);
             options.UseLazyLoadingProxies(false);
             options.UseChangeTrackingProxies(false);
-            options.EnableSensitiveDataLogging(true);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
