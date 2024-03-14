@@ -1,9 +1,10 @@
 ﻿using Datasource.Domain;
+using System.Runtime.CompilerServices;
 
 namespace Datasource.Interfaces
 {
     public interface IRepositoryTextSource
     {
-        Task<IEnumerable<TextSource>> SearchAsync(string mask);
+        IAsyncEnumerable<TextSource> SearchAsync(string mask, [EnumeratorCancellation] CancellationToken cancellationToken = default);
     }
 }

@@ -1,8 +1,9 @@
 ﻿using Datasource.Contexts;
 using Datasource.Domain;
 using Datasource.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 
 namespace Repositories.Api
 {
@@ -13,13 +14,21 @@ namespace Repositories.Api
         {
             this.scopeFactory = scopeFactory;
         }
-        public async Task<IEnumerable<TextSource>> SearchAsync(string mask)
+        public async IAsyncEnumerable<TextSource> SearchAsync(string mask, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
+            var regex = new Regex(mask, RegexOptions.Compiled);
+
             using var scope = scopeFactory.CreateAsyncScope();
 
             var context = scope.ServiceProvider.GetRequiredService<DbContextSequentialSearch>();
 
-            return await context.TextSources.Where(p => p.TextData == mask).ToListAsync();
+            await foreach (var textSource in context.TextSources.AsAsyncEnumerable().WithCancellation(cancellationToken))
+            {
+                if (regex.IsMatch(textSource.TextData))
+                {
+                    yield return textSource;
+                }
+            }
         }
     }
 }

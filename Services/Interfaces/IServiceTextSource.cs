@@ -1,9 +1,10 @@
 ﻿using Services.Models;
+using System.Runtime.CompilerServices;
 
 namespace Services.Interfaces
 {
     public interface IServiceTextSource
     {
-        Task<IEnumerable<TextSourceResult>> SearchAsync(string mask);
+        IAsyncEnumerable<TextSourceResult> SearchAsync(string mask, [EnumeratorCancellation] CancellationToken cancellationToken = default);
     }
 }
