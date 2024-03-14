@@ -2,6 +2,7 @@
 using Datasource.Factories;
 using Datasource.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Repositories.Api;
 using Services.Api;
 using Services.Interfaces;
@@ -27,7 +28,8 @@ namespace Api.Middleware
             // 3 получение контекста в Repository будет происходить через IServiceScopeFactory (к сожалению антипаттерн)
             // 4 Repository и Service должны быть зарегистрированы как AddScoped
 
-            services.AddSingleton<IServiceScopeFactory, DbContextFactorySequentialSearch>();
+            services.AddSingleton<IServiceScopeFactory, DbContextSequentialSearchFactoryScope>();
+            services.AddSingleton<IDesignTimeDbContextFactory<DbContextSequentialSearch>, DbContextSequentialSearchFactoryDesignTime>();
 
             services.AddDbContext<DbContextSequentialSearch>(options =>
             {

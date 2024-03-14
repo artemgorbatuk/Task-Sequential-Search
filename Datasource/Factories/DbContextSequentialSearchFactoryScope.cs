@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Datasource.Factories;
-public class DbContextFactorySequentialSearch : IServiceScopeFactory
+public class DbContextSequentialSearchFactoryScope : IServiceScopeFactory
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public DbContextFactorySequentialSearch(IServiceScopeFactory serviceScopeFactory)
+    public DbContextSequentialSearchFactoryScope(IServiceScopeFactory serviceScopeFactory)
     {
         _serviceScopeFactory = serviceScopeFactory;
     }
