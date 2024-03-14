@@ -6,7 +6,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var connectionString = builder.Configuration.GetConnectionString("Docker") ?? string.Empty;
+builder.Services.AddLogging(loggingBuilder =>
+{
+    loggingBuilder.AddConsole();
+    loggingBuilder.AddDebug();
+});
+
+var connectionString = builder.Configuration.GetConnectionString("Docker") ?? default!;
 
 builder.Services.UseDbContextFactory(connectionString);
 builder.Services.UseDepencyInjection();
