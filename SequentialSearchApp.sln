@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "Api\Api.csproj", "{326A90AD-6177-4D23-B5C6-A8D4B7583208}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api", "Api\Api.csproj", "{326A90AD-6177-4D23-B5C6-A8D4B7583208}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{79658B65-DBF4-47DC-BF9F-4583DBA3851B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{79658B65-DBF4-47DC-BF9F-4583DBA3851B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repositories", "Repositories\Repositories.csproj", "{4615C4C7-E4F8-4D4F-87F3-2C36CCB05BC4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repositories", "Repositories\Repositories.csproj", "{4615C4C7-E4F8-4D4F-87F3-2C36CCB05BC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Datasource", "Datasource\Datasource.csproj", "{925B5745-58FD-429A-AE65-012ED6968E73}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Datasource", "Datasource\Datasource.csproj", "{925B5745-58FD-429A-AE65-012ED6968E73}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
