@@ -1,0 +1,9 @@
+﻿# Установка и выполнение миграций EF
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS ef
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+RUN apt-get update && apt-get install -y wait-for-it
+RUN dotnet tool install --global dotnet-ef
+ENV PATH="${PATH}:/root/.dotnet/tools"
+COPY . .
+ENTRYPOINT wait-for-it mssql:1433 -- dotnet-ef database update --project "Datasource/Datasource.csproj" --startup-project "Api/Api.csproj"

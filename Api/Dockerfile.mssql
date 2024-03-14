@@ -1,0 +1,27 @@
+﻿# Установка убунту
+FROM ubuntu:16.04
+
+# Установка предварительных условий, 
+# поскольку это необходимо для получения конфигурации репозитория для MSSQL server
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
+    apt-get install -yq curl apt-transport-https
+
+# Получение официальной конфигурации репозитория Microsoft
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
+    curl https://packages.microsoft.com/config/ubuntu/16.04/mssql-server-2017.list | tee /etc/apt/sources.list.d/mssql-server.list && \
+    apt-get update
+
+# Установка MSSQL Server из apt
+RUN apt-get install -y mssql-server
+
+# Установка пакетов для высокой доступности и полнотекстового поиска
+RUN apt-get install -y mssql-server-ha && \
+    apt-get install -y mssql-server-fts
+
+# Очистка места от установочных файлов
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists
+
+# Запуск MSSQL Server
+CMD /opt/mssql/bin/sqlservr

@@ -1,0 +1,42 @@
+﻿version: '3.8'
+name: sequential-search
+services:
+ mssql:
+    image: sequential-search-mssql
+    container_name: mssql
+    restart: always
+    build:
+      context: ..
+      dockerfile: Api/Dockerfile.mssql
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Password01"
+    ports:
+      - "1433:1433"
+    expose:
+      - 1433
+ mssql-migration:
+    image: sequential-search-migration
+    container_name: migration
+    build:
+      context: ..
+      dockerfile: Api/Dockerfile.migration
+    environment:
+       - ConnectionString=${ConnectionString}
+    depends_on:
+        - mssql
+        - webapi
+ webapi:
+    image: sequential-search-webapi
+    container_name: webapi
+    restart: always
+    build:
+      context: ..
+      dockerfile: Api/Dockerfile
+      no_cache: true
+      args:
+        - BUILD_DATE=${BUILD_DATE}
+    ports:
+      - "8080:80"
+    depends_on:
+      - mssql

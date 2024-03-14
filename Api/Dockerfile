@@ -1,20 +1,27 @@
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-nanoserver-1809 AS base
+﻿# Базовая стадия для запуска приложения
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 8080
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0-nanoserver-1809 AS build
+# Стадия сборки для компиляции и публикации .NET Web API приложения
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Api/Api.csproj", "Api/"]
-RUN dotnet restore "./Api/./Api.csproj"
+
+## Копируйте все проекты в контейнер
 COPY . .
-WORKDIR "/src/Api"
-RUN dotnet build "./Api.csproj" -c %BUILD_CONFIGURATION% -o /app/build
+
+## Восстанавливайте зависимости для всех проектов
+RUN dotnet restore
+
+## Сборка проекта Api
+RUN dotnet build "Api/Api.csproj" -c %BUILD_CONFIGURATION% -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Api.csproj" -c %BUILD_CONFIGURATION% -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Api/Api.csproj" -c %BUILD_CONFIGURATION% -o /app/publish /p:UseAppHost=false
 
+# Финальная стадия для запуска собранного приложения
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
