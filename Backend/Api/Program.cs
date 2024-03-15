@@ -21,11 +21,12 @@ builder.WebHost.UseUrls("http://localhost:5001");
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("localHostPolicy",
-        builder => builder.WithOrigins("http://localhost:4200/", "http://127.0.0.1:4200/")
-                          .AllowAnyMethod()
-                          .AllowAnyHeader()
-                          .AllowCredentials());
+    options.AddPolicy("CorsPolicy",
+        builder => builder.WithOrigins("http://localhost/", "http://localhost:4200/", "http://127.0.0.1:4200/", "http://host.docker.internal:4200/")
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials()
+        .SetIsOriginAllowedToAllowWildcardSubdomains());
 });
 
 var app = builder.Build();
@@ -36,7 +37,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("localHostPolicy");
+app.UseRouting();
+
+app.UseCors("CorsPolicy");
 
 app.UseAuthorization();
 
