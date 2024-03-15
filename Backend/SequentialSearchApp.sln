@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repositories", "Repositorie
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Datasource", "Datasource\Datasource.csproj", "{925B5745-58FD-429A-AE65-012ED6968E73}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backend", "Backend", "{60945388-4D04-464D-BE25-C0800BEACD0B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +38,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{326A90AD-6177-4D23-B5C6-A8D4B7583208} = {60945388-4D04-464D-BE25-C0800BEACD0B}
+		{79658B65-DBF4-47DC-BF9F-4583DBA3851B} = {60945388-4D04-464D-BE25-C0800BEACD0B}
+		{4615C4C7-E4F8-4D4F-87F3-2C36CCB05BC4} = {60945388-4D04-464D-BE25-C0800BEACD0B}
+		{925B5745-58FD-429A-AE65-012ED6968E73} = {60945388-4D04-464D-BE25-C0800BEACD0B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B80428CB-0B78-4FE9-B84E-8234B0712999}
