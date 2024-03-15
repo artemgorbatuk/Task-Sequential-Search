@@ -4,6 +4,7 @@ using Services.Interfaces;
 using Services.Models;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 
 namespace Services.Api
 {
@@ -16,17 +17,9 @@ namespace Services.Api
         }
         public async IAsyncEnumerable<TextSourceResult> SearchAsync(string mask, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
-            var results = new ConcurrentBag<TextSourceResult>();
-
-            //await Parallel.ForEachAsync(repositoryTextSource.SearchAsync(mask, cancellationToken), textSource =>
-            //{
-            //    var textSourceResult = MapTo(textSource);
-            //    results.Add(textSourceResult);
-            //});
-
-            foreach (var result in results)
+            await foreach (var textSource in repositoryTextSource.SearchAsync(mask, cancellationToken))
             {
-                yield return result;
+                yield return MapTo(textSource);
             }
         }
         private static TextSourceResult MapTo(TextSource textSource)

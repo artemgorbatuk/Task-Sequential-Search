@@ -16,14 +16,14 @@ namespace Api.Controllers
             this.logger = logger;
         }
         [HttpGet]
-        public async IAsyncEnumerable<TextSourceResult> Search(string mask)
+        public async IAsyncEnumerable<ActionResult<TextSourceResult>> Search(string mask)
         {
             var cancellationTokenSource = new CancellationTokenSource();
             cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(30));
 
-            await foreach (var result in serviceTextSource.SearchAsync(mask))
+            await foreach (var textSource in serviceTextSource.SearchAsync(mask, cancellationTokenSource.Token))
             {
-                yield return result;
+                yield return Ok(textSource);
             }
         }
     }
