@@ -17,8 +17,6 @@ var connectionString = builder.Configuration.GetConnectionString("Docker") ?? de
 builder.Services.UseDbContextFactory(connectionString);
 builder.Services.UseDepencyInjection();
 
-builder.WebHost.UseUrls("http://localhost:5001");
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy",

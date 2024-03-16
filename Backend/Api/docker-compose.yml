@@ -37,6 +37,6 @@ services:
       args:
         - BUILD_DATE=${BUILD_DATE}
     ports:
-      - "8080:80"
+      - "8080:54414"
     depends_on:
       - mssql

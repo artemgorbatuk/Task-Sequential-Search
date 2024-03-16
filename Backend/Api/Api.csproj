@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <InvariantGlobalization>false</InvariantGlobalization>
     <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
-	<NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
+	<!--<NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>-->
   </PropertyGroup>
 
   <ItemGroup>
