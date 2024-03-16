@@ -20,10 +20,10 @@ builder.Services.UseDepencyInjection();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy",
-        builder => builder.WithOrigins("http://localhost/", "http://localhost:4200/", "http://127.0.0.1:4200/", "http://host.docker.internal:4200/")
+        builder => builder
+        .AllowAnyOrigin()
         .AllowAnyMethod()
         .AllowAnyHeader()
-        .AllowCredentials()
         .SetIsOriginAllowedToAllowWildcardSubdomains());
 });
 

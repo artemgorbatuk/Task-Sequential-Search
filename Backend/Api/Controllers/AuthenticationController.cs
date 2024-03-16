@@ -4,7 +4,6 @@ using Services.Interfaces;
 
 namespace Api.Controllers
 {
-    [EnableCors("CorsPolicy")]
     [ApiController]
     [Route("[controller]")]
     public class AuthenticationController : ControllerBase
