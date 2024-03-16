@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
+using Services.Models;
 
 namespace Api.Controllers
 {
@@ -17,13 +17,13 @@ namespace Api.Controllers
             this.logger = logger;
         }
 
-        [HttpPost]
-        public IActionResult Login(string username, string password)
+        [HttpPost("Login")]
+        public IActionResult Login([FromBody]LoginFilter filter)
         {
-            bool isAuthenticated = serviceAuthentification.Login(username, password);
+            bool isAuthenticated = serviceAuthentification.Login(filter.UserName, filter.Password);
 
             return isAuthenticated 
-                ? Ok(new { Message = "Аутентификация прошла успешно" }) 
+                ? Ok(new { Message = "success" }) 
                 : Unauthorized();
         }
     }

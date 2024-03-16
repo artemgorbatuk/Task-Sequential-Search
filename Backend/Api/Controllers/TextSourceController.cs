@@ -4,7 +4,7 @@ using Services.Models;
 
 namespace Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class TextSourceController : ControllerBase
     {
@@ -15,8 +15,8 @@ namespace Api.Controllers
             this.serviceTextSource = serviceTextSource;
             this.logger = logger;
         }
-        [HttpGet]
-        public async IAsyncEnumerable<ActionResult<TextSourceResult>> Search(string mask)
+        [HttpGet("Search")]
+        public async IAsyncEnumerable<ActionResult<TextSourceResult>> SearchAsync(string mask)
         {
             var cancellationTokenSource = new CancellationTokenSource();
             cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(30));

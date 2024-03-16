@@ -4,7 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 const routes: Routes = [
   {
-    path: 'security',
+    path: 'login',
     loadChildren: () => import('./security/authentication.module').then(m => m.AuthenticationModule)
   }
 ];
