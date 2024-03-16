@@ -12,7 +12,11 @@ WORKDIR /src
 COPY . .
 
 ## Восстанавливайте зависимости для всех проектов
-RUN dotnet restore
+#RUN dotnet restore
+RUN dotnet restore ./Datasource/Datasource.csproj
+RUN dotnet restore ./Repositories/Repositories.csproj
+RUN dotnet restore ./Services/Services.csproj
+RUN dotnet restore ./Api/Api.csproj
 
 ## Сборка проекта Api
 RUN dotnet build "Api/Api.csproj" -c %BUILD_CONFIGURATION% -o /app/build
