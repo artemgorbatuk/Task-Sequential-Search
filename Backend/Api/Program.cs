@@ -23,8 +23,14 @@ builder.Services.AddCors(options =>
     options.AddPolicy("CorsPolicy",
         builder => builder
         .AllowAnyOrigin()
+        //.SetIsOriginAllowed(_ => true)
         .AllowAnyMethod()
         .AllowAnyHeader()
+        //.AllowCredentials()
+        //The CORS protocol does not allow 
+        // specifying a wildcard (any) origin and credentials at the same time.
+        // Configure the CORS policy by listing individual origins
+        // if credentials needs to be supported.
         .SetIsOriginAllowedToAllowWildcardSubdomains());
 });
 
