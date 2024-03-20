@@ -1,0 +1,48 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 24pt;
+  margin: 0;
+}
+
+.search-container {
+  display: flex;
+  background-color: #FFF;
+  position: relative;
+  width: 100%;
+}
+
+.search-box {
+  font-size: 24pt;
+  background-color: transparent;
+  border: 0;
+  border-color: #4CAF50;
+  width: 90%;
+  margin-right: 10px;
+  flex-grow: 1;
+}
+
+.search-button {
+  font-size: 16pt;
+  background: #4CAF50;
+  color: #FFFFFF;
+  border: 0;
+}
+
+  .search-button:hover, search-button:active {
+    background: #43A047;
+  }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table, th, td {
+  border: 1px solid black;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+}

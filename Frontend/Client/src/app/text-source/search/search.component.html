@@ -1,1 +1,18 @@
-<p>search works!</p>
+<div class="search-container">
+  <input type="text" class="search-box" placeholder="Введите данные..." [(ngModel)]="searchMask">
+  <button class="search-button" (click)="loading ? onStop() : onSearch()">{{ loading ? 'Стоп' : 'Поиск' }}</button>
+</div>
+<table>
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>Text Data</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let textSource of textSources">
+      <td>{{ textSource.id }}</td>
+      <td>{{ textSource.textData }}</td>
+    </tr>
+  </tbody>
+</table>

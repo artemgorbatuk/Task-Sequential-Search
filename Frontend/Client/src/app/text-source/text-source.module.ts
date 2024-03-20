@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { TextSourceRoutingModule } from './text-source-routing.module';
 import { SearchComponent } from './search/search.component';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -11,7 +12,8 @@ import { SearchComponent } from './search/search.component';
   ],
   imports: [
     CommonModule,
-    TextSourceRoutingModule
+    TextSourceRoutingModule,
+    FormsModule
   ]
 })
 export class TextSourceModule { }
