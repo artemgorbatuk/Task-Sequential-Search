@@ -2,9 +2,7 @@
 using Datasource.Interfaces;
 using Services.Interfaces;
 using Services.Models;
-using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
 
 namespace Services.Api
 {
@@ -24,6 +22,9 @@ namespace Services.Api
         }
         private static TextSourceResult MapTo(TextSource textSource)
         {
+            /// Мог бы реализовать это с помощью Automapper
+            /// Посчитал что в данном случае это будет не уместно
+            /// С Automapper работал, выполняя разной сложности задачи
             return new TextSourceResult
             {
                 Id = textSource.Id,
