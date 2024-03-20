@@ -8,6 +8,7 @@ services:
     build:
       context: ..
       dockerfile: Api/Dockerfile.mssql
+      no_cache: true
     environment:
       ACCEPT_EULA: "Y"
       MSSQL_SA_PASSWORD: "Password01"
@@ -21,11 +22,28 @@ services:
     build:
       context: ..
       dockerfile: Api/Dockerfile.migration
+      no_cache: true
     environment:
        - ConnectionString=${ConnectionString}
     depends_on:
         - mssql
         - webapi
+ mssql-sql-functions:
+    image: sequential-search-sql-functions
+    container_name: sql-functions
+    build:
+      context: ..
+      dockerfile: Api/Dockerfile.sqlfunctions
+      no_cache: true
+      #хранение данных временное, нужно вернуться и проверить забираются ли из .env
+    environment:
+       - ConnectionString=${ConnectionString}
+       - SQL_SERVER=host.docker.internal,1433
+       - SQL_DATABASE=SequentialSearch
+       - SQL_USER=SA
+       - SQL_PASSWORD=Password01
+    depends_on:
+        - mssql
  webapi:
     image: sequential-search-webapi
     container_name: webapi
@@ -34,9 +52,5 @@ services:
       context: ..
       dockerfile: Api/Dockerfile
       no_cache: true
-      args:
-        - BUILD_DATE=${BUILD_DATE}
     ports:
       - "8080:54414"
-    depends_on:
-      - mssql

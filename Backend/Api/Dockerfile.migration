@@ -1,9 +1,23 @@
-﻿# Установка и выполнение миграций EF
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS ef
+﻿# Установка sdk
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS sdk
 ARG BUILD_CONFIGURATION=Release
-WORKDIR /src
+
+# Установка wait-for-it
 RUN apt-get update && apt-get install -y wait-for-it
+
+# Установка entity framework
 RUN dotnet tool install --global dotnet-ef
 ENV PATH="${PATH}:/root/.dotnet/tools"
-COPY . .
+
+# Копирование исходников проектов в папку src
+WORKDIR /src
+COPY Services/ Services/
+COPY Repositories/ Repositories/
+COPY Datasource/ Datasource/
+COPY Api/ Api/
+
 ENTRYPOINT wait-for-it mssql:1433 -- dotnet-ef database update --project "Datasource/Datasource.csproj" --startup-project "Api/Api.csproj"
+
+# Очистка места от установочных файлов
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists
