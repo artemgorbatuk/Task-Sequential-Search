@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{D1
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "Client", "..\Frontend\Client\Client.esproj", "{DFA5E323-B9DF-4E0D-8126-706C9D60F671}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlClr.Assemblies", "SqlClr.Assemblies\SqlClr.Assemblies.csproj", "{7BCD7D90-ABC8-4431-A496-A3C605168715}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{DFA5E323-B9DF-4E0D-8126-706C9D60F671}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DFA5E323-B9DF-4E0D-8126-706C9D60F671}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DFA5E323-B9DF-4E0D-8126-706C9D60F671}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{7BCD7D90-ABC8-4431-A496-A3C605168715}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BCD7D90-ABC8-4431-A496-A3C605168715}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BCD7D90-ABC8-4431-A496-A3C605168715}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BCD7D90-ABC8-4431-A496-A3C605168715}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,6 +61,7 @@ Global
 		{4615C4C7-E4F8-4D4F-87F3-2C36CCB05BC4} = {60945388-4D04-464D-BE25-C0800BEACD0B}
 		{925B5745-58FD-429A-AE65-012ED6968E73} = {60945388-4D04-464D-BE25-C0800BEACD0B}
 		{DFA5E323-B9DF-4E0D-8126-706C9D60F671} = {D1F63822-8CC3-475E-A654-ECD1454B577E}
+		{7BCD7D90-ABC8-4431-A496-A3C605168715} = {60945388-4D04-464D-BE25-C0800BEACD0B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B80428CB-0B78-4FE9-B84E-8234B0712999}
