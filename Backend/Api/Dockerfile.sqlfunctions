@@ -1,0 +1,104 @@
+﻿#
+# Сейчас контейнер собирается, запускает, файл в папке /app/SqlClr.Assemblies.dll создается
+# Но скрипт внутри контейнера отрабатывает с ошибкой, 
+# Если коротко, то не возможно открыть файл.
+# Что не так, пока думаю, есть пара идей.
+#
+#
+#2024-03-20 17:58:41 wait-for-it: waiting 15 seconds for mssql:1433
+#2024-03-20 17:58:41 wait-for-it: mssql:1433 is available after 0 seconds
+#2024-03-20 17:58:41 Configuration option 'show advanced options' changed from 1 to 1. Run the RECONFIGURE statement to install.
+#2024-03-20 17:58:41 Configuration option 'clr enabled' changed from 1 to 1. Run the RECONFIGURE statement to install.
+#2024-03-20 17:58:41 Configuration option 'clr strict security' changed from 0 to 0. Run the RECONFIGURE statement to install.
+#2024-03-20 17:58:41 Msg 6501, Level 16, State 7, Server c46272dae34a, Line 1
+#2024-03-20 17:58:41 CREATE ASSEMBLY failed because it could not open the physical file '/app/SqlClr.Assemblies.dll': 2(The system cannot find the file specified.).
+#2024-03-20 17:58:41 Msg 6528, Level 16, State 1, Server c46272dae34a, Procedure RegexMatch, Line 1
+#2024-03-20 17:58:41 Assembly 'SqlClr.Assemblies' was not found in the SQL catalog of database 'SequentialSearch'.
+
+
+# Установка убунту
+FROM ubuntu:16.04
+
+# Установка sdk
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS sdk
+ARG BUILD_CONFIGURATION=Release
+
+# Чистим кэш и удаляем поврежденные пакеты
+RUN apt-get clean && \
+    apt-get autoclean && \
+    apt-get autoremove
+
+# Установка wait-for-it
+RUN apt-get update && apt-get install -y wait-for-it
+
+# Установка 
+# mssql-tools - набор стандартных SQL команд
+# msodbcsql17 - драйверы Microsoft ODBC для SQL Server
+# odbcinst1debian2 и unixodbc - ODBC (Open Database Connectivity) пакеты
+# gnupg2 (GNU Privacy Guard 2) - шифрует и подписывает коммуникации
+RUN apt-get update && apt-get install -y \
+    curl gnupg2 libunwind8 && \
+    curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
+    curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list > /etc/apt/sources.list.d/msprod.list && \
+    apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql17 odbcinst1debian2 unixodbc mssql-tools
+
+# Решение проблемы SSL Provider: OpenSSL library could not be loaded, 
+# make sure OpenSSL 1.0 or 1.1 is installed.
+# Client unable to establish connection.
+RUN rm -f /usr/local/opt/openssl
+RUN apt-get update && apt-get install -y wget build-essential
+RUN wget https://www.openssl.org/source/openssl-1.1.1l.tar.gz
+RUN tar -xzvf openssl-1.1.1l.tar.gz && \
+    cd openssl-1.1.1l && \
+    ./config && \
+    make && \
+    make install
+ENV LD_LIBRARY_PATH=/usr/local/lib
+
+# Пволяет создавать шестнадцатеричный дамп файла
+#RUN apt install xxd
+
+# установка gnupg нужен для mono
+RUN apt-get update && apt-get install -y gnupg ca-certificates
+
+# Добавление ключа для репозитория Mono
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+
+# Добавление репозитория Mono
+RUN echo "deb https://download.mono-project.com/repo/ubuntu stable-bionic main" | tee /etc/apt/sources.list.d/mono-official-stable.list
+
+# Обновление списка пакетов и установка Mono
+RUN apt-get update && apt-get install -y mono-complete
+
+
+# Копируем проект в папку /src
+WORKDIR /src
+COPY SqlClr.Assemblies/ SqlClr.Assemblies/
+
+# Восстанавливаем зависимости проекта
+RUN dotnet restore SqlClr.Assemblies/SqlClr.Assemblies.csproj
+
+# Сборка проекта в папку /app
+RUN msbuild SqlClr.Assemblies/SqlClr.Assemblies.csproj /t:Build /p:Configuration=Release /p:OutputPath=/app
+
+# Преобразование DLL в шестнадцатеричный формат
+#RUN xxd -p /app/SqlClr.Assemblies.dll > /app/SqlClr.Assemblies.hex
+
+# Определение переменной DLL_HEX_VALUE
+#RUN { head -n 1 /app/SqlClr.Assemblies.hex | sed 's/^/0x/'; tail -n +2 /app/SqlClr.Assemblies.hex; } > /tmp/temp_file \
+#    && export DLL_HEX_VALUE=$(< /tmp/temp_file) \
+#    && rm /tmp/temp_file
+
+# Запуск SQL-скрипта 
+# tail -f /dev/null - делает сервис постоянно активным, добавил временно для отладки докерфайла
+ENTRYPOINT ["/bin/bash", "-c", "wait-for-it mssql:1433 -- && \
+    /opt/mssql-tools/bin/sqlcmd -S mssql -U $SQL_USER -P $SQL_PASSWORD -d $SQL_DATABASE -Q \"EXEC sp_configure 'show advanced options', 1; RECONFIGURE;\" && \
+    /opt/mssql-tools/bin/sqlcmd -S mssql -U $SQL_USER -P $SQL_PASSWORD -d $SQL_DATABASE -Q \"EXEC sp_configure 'clr enabled', 1;\" && \
+    /opt/mssql-tools/bin/sqlcmd -S mssql -U $SQL_USER -P $SQL_PASSWORD -d $SQL_DATABASE -Q \"EXEC sp_configure 'clr strict security', 0; RECONFIGURE;\" && \
+    /opt/mssql-tools/bin/sqlcmd -S mssql -U $SQL_USER -P $SQL_PASSWORD -d $SQL_DATABASE -Q \"CREATE ASSEMBLY [SqlClr.Assemblies] FROM '/app/SqlClr.Assemblies.dll' WITH PERMISSION_SET = SAFE;\" && \
+    /opt/mssql-tools/bin/sqlcmd -S mssql -U $SQL_USER -P $SQL_PASSWORD -d $SQL_DATABASE -Q \"CREATE FUNCTION dbo.RegexMatch(@input NVARCHAR(MAX), @pattern NVARCHAR(MAX)) RETURNS BIT AS EXTERNAL NAME [SqlClr.Assemblies].[RegularExpressions].SqlClrRegexMatch;\" && \
+    tail -f /dev/null"]
+
+# Очистка места от установочных файлов
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists
