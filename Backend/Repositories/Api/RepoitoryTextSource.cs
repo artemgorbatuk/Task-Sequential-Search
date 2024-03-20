@@ -21,12 +21,15 @@ namespace Repositories.Api
 
             var context = scope.ServiceProvider.GetRequiredService<DbContextSequentialSearch>();
 
-            var textSources = context.TextSources
-                .Where(ts => EF.Functions.FreeText(ts.TextData, mask))
-                .AsAsyncEnumerable();
+            // EF.Functions.FreeText(textSource.TextData, mask)
 
-            await foreach (var textSource in textSources.WithCancellation(cancellationToken))
+            await foreach (var textSource in context.TextSources
+                .Where(p => p.TextData.Contains(mask))
+                .AsAsyncEnumerable()
+                .WithCancellation(cancellationToken))
             {
+                await Task.Delay(100, cancellationToken);
+
                 yield return textSource;
             }
         }
