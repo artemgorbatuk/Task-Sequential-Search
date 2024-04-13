@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace SqlClr.Assemblies
 {
-    public partial class RegularExpressions
+    public static class RegularExpressions
     {
         [SqlFunction(IsDeterministic = true)]
         public static SqlBoolean SqlClrRegexMatch(SqlChars input, SqlString pattern)

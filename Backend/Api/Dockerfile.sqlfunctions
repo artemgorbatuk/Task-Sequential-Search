@@ -56,7 +56,7 @@ RUN tar -xzvf openssl-1.1.1l.tar.gz && \
 ENV LD_LIBRARY_PATH=/usr/local/lib
 
 # Пволяет создавать шестнадцатеричный дамп файла
-#RUN apt install xxd
+RUN apt install xxd
 
 # установка gnupg нужен для mono
 RUN apt-get update && apt-get install -y gnupg ca-certificates
@@ -81,13 +81,16 @@ RUN dotnet restore SqlClr.Assemblies/SqlClr.Assemblies.csproj
 # Сборка проекта в папку /app
 RUN msbuild SqlClr.Assemblies/SqlClr.Assemblies.csproj /t:Build /p:Configuration=Release /p:OutputPath=/app
 
+# Установка разрешений 777 для файла. позволяет всем пользователям читать, записывать и выполнять файл
+# RUN chmod 777 /app/SqlClr.Assemblies.dll
+
 # Преобразование DLL в шестнадцатеричный формат
-#RUN xxd -p /app/SqlClr.Assemblies.dll > /app/SqlClr.Assemblies.hex
+RUN xxd -p /app/SqlClr.Assemblies.dll | tr -d '\n' > /app/SqlClr.Assemblies.hex
 
 # Определение переменной DLL_HEX_VALUE
-#RUN { head -n 1 /app/SqlClr.Assemblies.hex | sed 's/^/0x/'; tail -n +2 /app/SqlClr.Assemblies.hex; } > /tmp/temp_file \
-#    && export DLL_HEX_VALUE=$(< /tmp/temp_file) \
-#    && rm /tmp/temp_file
+RUN { head -n 1 /app/SqlClr.Assemblies.hex | sed 's/^/0x/'; tail -n +2 /app/SqlClr.Assemblies.hex; } > /tmp/temp_file \
+    && export DLL_HEX_VALUE=$(< /tmp/temp_file) \
+    && rm /tmp/temp_file
 
 # Запуск SQL-скрипта 
 # tail -f /dev/null - делает сервис постоянно активным, добавил временно для отладки докерфайла
@@ -95,8 +98,9 @@ ENTRYPOINT ["/bin/bash", "-c", "wait-for-it mssql:1433 -- && \
     /opt/mssql-tools/bin/sqlcmd -S mssql -U $SQL_USER -P $SQL_PASSWORD -d $SQL_DATABASE -Q \"EXEC sp_configure 'show advanced options', 1; RECONFIGURE;\" && \
     /opt/mssql-tools/bin/sqlcmd -S mssql -U $SQL_USER -P $SQL_PASSWORD -d $SQL_DATABASE -Q \"EXEC sp_configure 'clr enabled', 1;\" && \
     /opt/mssql-tools/bin/sqlcmd -S mssql -U $SQL_USER -P $SQL_PASSWORD -d $SQL_DATABASE -Q \"EXEC sp_configure 'clr strict security', 0; RECONFIGURE;\" && \
-    /opt/mssql-tools/bin/sqlcmd -S mssql -U $SQL_USER -P $SQL_PASSWORD -d $SQL_DATABASE -Q \"CREATE ASSEMBLY [SqlClr.Assemblies] FROM '/app/SqlClr.Assemblies.dll' WITH PERMISSION_SET = SAFE;\" && \
-    /opt/mssql-tools/bin/sqlcmd -S mssql -U $SQL_USER -P $SQL_PASSWORD -d $SQL_DATABASE -Q \"CREATE FUNCTION dbo.RegexMatch(@input NVARCHAR(MAX), @pattern NVARCHAR(MAX)) RETURNS BIT AS EXTERNAL NAME [SqlClr.Assemblies].[RegularExpressions].SqlClrRegexMatch;\" && \
+    /opt/mssql-tools/bin/sqlcmd -S mssql -U $SQL_USER -P $SQL_PASSWORD -d $SQL_DATABASE -Q \"ALTER DATABASE $SQL_DATABASE SET TRUSTWORTHY ON;\" && \
+    /opt/mssql-tools/bin/sqlcmd -S mssql -U $SQL_USER -P $SQL_PASSWORD -d $SQL_DATABASE -Q \"CREATE ASSEMBLY [SqlClr.Assemblies] FROM $DLL_HEX_VALUE WITH PERMISSION_SET = SAFE;\" && \
+    /opt/mssql-tools/bin/sqlcmd -S mssql -U $SQL_USER -P $SQL_PASSWORD -d $SQL_DATABASE -Q \"CREATE FUNCTION SqlClrRegexMatch(@input NVARCHAR(MAX), @pattern NVARCHAR(MAX)) RETURNS BIT AS EXTERNAL NAME [SqlClr.Assemblies].[RegularExpressions].SqlClrRegexMatch;\" && \
     tail -f /dev/null"]
 
 # Очистка места от установочных файлов
